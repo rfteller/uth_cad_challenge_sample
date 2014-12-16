@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="source\MachineLearning\gaussian_distribution\calculate_gaussian_distribution.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\common\delete_matrix.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\calculate_mahalanobis_distance.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\calculate_mahalanobis_distance_ratio.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\example_set\delete_example_data.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\example_set\delete_example_set.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\gaussian_distribution\delete_gaussian_distribution.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\delete_mahalanobis_distance_ratio_classifier.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\delete_mdc_param.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\nr2_c211\lubksb.c">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\common\inverse_matrix.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\example_set\io_example_set.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\io_mahalanobis_distance_ratio_classifier.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\common\io_matrix.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\nr2_c211\ludcmp.c">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\mahalanobis_distance_array.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\mahalanobis_distance_ratio_array.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\common\multiply_matrices.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\example_set\new_example_data.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\example_set\new_example_set.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\gaussian_distribution\new_gaussian_distirubtion.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\new_mahalanobis_distance_ratio_classifier.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\common\new_matrix.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\new_mdc_param.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\nr2_c211\nrutil.c">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\example_set\num_of_examples.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\write_mahalanobis_distance_ratio.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\example_set\num_of_labeled_examples.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\common\separate_std_string.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\training_mahalanobis_distance_ratio_classifier.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AneurysmDetector\training.cpp" />
+    <ClCompile Include="source\AneurysmDetector\training_main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\MachineLearning\example_set.h">
+      <Filter>MachineLearning</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MachineLearning\gaussian_distribution.h">
+      <Filter>MachineLearning</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MachineLearning\nr2_c211\nrutil.h">
+      <Filter>MachineLearning</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MachineLearning\mahalanobis_distance.h">
+      <Filter>MachineLearning</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MachineLearning\nr2_c211\nr.h">
+      <Filter>MachineLearning</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AneurysmDetector\common.h" />
+    <ClInclude Include="source\AneurysmDetector\training.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="MachineLearning">
+      <UniqueIdentifier>{ebfc124e-b934-4838-ae29-c280c28562b7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

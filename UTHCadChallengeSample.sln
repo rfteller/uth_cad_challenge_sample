@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AneurysmDetector", "AneurysmDetector.vcxproj", "{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AneurysmDetector_training", "AneurysmDetector_training.vcxproj", "{53AD39E9-7631-49CB-B5AC-080204EFA94F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Debug|Win32.Build.0 = Debug|Win32
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Debug|x64.ActiveCfg = Debug|x64
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Debug|x64.Build.0 = Debug|x64
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Release|Win32.ActiveCfg = Release|Win32
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Release|Win32.Build.0 = Release|Win32
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Release|x64.ActiveCfg = Release|x64
+		{5865F5B8-EB29-42D6-8FC5-16FA39FB66CD}.Release|x64.Build.0 = Release|x64
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Debug|Win32.Build.0 = Debug|Win32
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Debug|x64.ActiveCfg = Debug|x64
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Debug|x64.Build.0 = Debug|x64
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Release|Win32.ActiveCfg = Release|Win32
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Release|Win32.Build.0 = Release|Win32
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Release|x64.ActiveCfg = Release|x64
+		{53AD39E9-7631-49CB-B5AC-080204EFA94F}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
