@@ -29,7 +29,10 @@ VOL_INTBOX3D* vessel_box = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-VOL_RAWVOLUMEDATA* vesselSegmentation(VOL_RAWVOLUMEDATA* volume, char* log_file_name)
+VOL_RAWVOLUMEDATA* vesselSegmentation(
+	VOL_RAWVOLUMEDATA* volume,
+	VOL_SIZE3D* voxel_size,
+	char* log_file_name)
 {
 	char buffer[1024];
 	float brain_mean, brain_sigma;
@@ -46,6 +49,7 @@ VOL_RAWVOLUMEDATA* vesselSegmentation(VOL_RAWVOLUMEDATA* volume, char* log_file_
 	
 	VOL_RAWVOLUMEDATA* ret = getVesselMask(
 		volume,
+		voxel_size,
 		brain_box,
 		brain_mean,
 		brain_sigma,
@@ -113,10 +117,15 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 							  / basic_tag_values->voxelSize_mm->width;
 
 	VOL_INTSIZE3D  iso_matrix_size;
+	VOL_SIZE3D     iso_voxel_size;
 
 	iso_matrix_size.width  = (int)((float)volume->matrixSize->width);
 	iso_matrix_size.height = (int)((float)volume->matrixSize->height);
 	iso_matrix_size.depth  = (int)((float)volume->matrixSize->depth * interpolation_ratio);
+
+	iso_voxel_size.width  = basic_tag_values->voxelSize_mm->depth;
+	iso_voxel_size.height = iso_voxel_size.width;
+	iso_voxel_size.depth  = iso_voxel_size.width;
 
 	VOL_ScaleRawVolumeData(volume, &iso_matrix_size, VOL_SCALING_METHOD_LINEAR);
 
@@ -133,7 +142,7 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 	//------------------------------------------------------------------------------------------
 	CircusCS_AppendLogFile(log_file_name, "Vessel segmentation");
 
-	VOL_RAWVOLUMEDATA* vessel_mask = vesselSegmentation(volume, log_file_name);
+	VOL_RAWVOLUMEDATA* vessel_mask = vesselSegmentation(volume, &iso_voxel_size, log_file_name);
 
 	if( vessel_mask == NULL )
 	{

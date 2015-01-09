@@ -11,6 +11,8 @@
 
 #include "vessel_segmentation.h"
 
+#define  SEED_VOI_HALF_SIZE_XY   25.0	// [mm]
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void
@@ -128,6 +130,7 @@ getBrainBox(VOL_RAWVOLUMEDATA* original, float brain_mean, float brain_sigma, ch
 
 VOL_RAWVOLUMEDATA* getVesselMask(
 	VOL_RAWVOLUMEDATA* original,
+	VOL_SIZE3D* voxel_size,
 	VOL_INTBOX3D* brain_box,
 	float brain_mean,
 	float brain_sigma,
@@ -135,24 +138,75 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 {
 
 	VOL_RAWVOLUMEDATA	*mask = VOL_DuplicateRawVolumeData(original);
-	unsigned int		totalVoxels;
+	unsigned int		total_voxels;
 	char				buffer[512];
 
-	// Initial Segmentation (thresholding)
+	VOL_VOLVALUERANGE threshold_range;
+	threshold_range.min.uint8 = 1;
+	threshold_range.max.uint8 = 1;
+
+	// Region growing
 	{
-		VOL_VOLVALUERANGE	range;
-		range.min.sint16 = (short)(brain_mean + brain_sigma * 2.5f);
-		range.max.sint16 = 10000;
+		// Make seed point for region growing
+		int voi_half_size_xy = (int)(SEED_VOI_HALF_SIZE_XY / voxel_size->width); 
 
-		sprintf(buffer, "--- Vessel threshold: %d", range.min.sint16);
-		CircusCS_AppendLogFile(log_file_name, buffer);
+		int x0 = max(original->matrixSize->width  / 2 - voi_half_size_xy, 0);
+		int y0 = max(original->matrixSize->height / 2 - voi_half_size_xy, 0);
+		int z0 = original->matrixSize->depth * 2 / 5;
+		int x_end = min(original->matrixSize->width  / 2 + voi_half_size_xy,
+						original->matrixSize->width);
+		int y_end = min(original->matrixSize->height / 2 + voi_half_size_xy,
+						original->matrixSize->height);
+		int z_end = original->matrixSize->depth * 4 / 5;
 
-		totalVoxels = VOL_ThresholdingMinMax(mask,0, &range);
+		short*** src_data = (short***)original->array4D[0];
+		short    seed_th  = (short)(brain_mean + brain_sigma * 3.0f);
+		int      seed_num = 0;
+
+		for(int k = z0; k < z_end; k++)
+		for(int j = y0; j < y_end; j++)
+		for(int i = x0; i < x_end; i++)
+		{
+			if(src_data[k][j][i] > seed_th)	seed_num++;
+		}
+
+		VOL_LOCATIONARRAY* seed_array=VOL_NewLocationArray(seed_num);
+
+		for(int k = z0; k < z_end; k++)
+		for(int j = y0; j < y_end; j++)
+		for(int i = x0; i < x_end; i++)
+		{
+			if(src_data[k][j][i] > seed_th)
+			{
+				VOL_AddLocationArrayElement(seed_array, VOL_NewIntVector3D(i, j, k));
+			}
+		}
+
+		// Set growing area (thresholding)
+		{
+			VOL_VOLVALUERANGE	src_range;
+			src_range.min.sint16 = (short)(brain_mean + brain_sigma * 2.5f);
+			src_range.max.sint16 = VOL_MAX_OF_SINT16;
+
+			sprintf(buffer, "--- Vessel threshold: %d", src_range.min.sint16);
+			CircusCS_AppendLogFile(log_file_name, buffer);
+		}
+	
+		int num_voxels = VOL_RegionGrowingSeededByPoints(
+							mask,
+							0,
+							&threshold_range,
+							VOL_NEIGHBOURTYPE_26,
+							seed_array);
+
+		// do thresholding
+		threshold_range.max.uint8 = 255;
+		total_voxels = VOL_ThresholdingMinMax(mask, 0, &threshold_range);
 	}
 
 	// Labeling and vessel selection
 	{
-		unsigned int  component_ids[4];
+		unsigned int  component_ids[8];
 		int			  extracted_cc_cnt = 0;
 		VOL_VECTOR3D  centor_of_gravity;
 
@@ -173,7 +227,7 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 
 			VOL_GetCenterOfGravityOfComponent( cc_data, (unsigned long)i, &centor_of_gravity );
 
-			volume_percentage = (float)cc_data->nVoxelsOfComponents[i]/(float)totalVoxels*100.0f;
+			volume_percentage = (float)cc_data->nVoxelsOfComponents[i]/(float)total_voxels*100.0f;
 			
 			ngx = (centor_of_gravity.x-(float)brain_box->origin->x)/(float)brain_box->size->width;
 			ngy = (centor_of_gravity.y-(float)brain_box->origin->y)/(float)brain_box->size->height;
@@ -186,9 +240,7 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 				ngy,
 				ngz);
 
-			if( extracted_cc_cnt <= 2 && volume_percentage >= 2.7f
-				&& ngx >= 0.25f && ngx <= 0.75f
-				&& ngy >= 0.32f && ngy <= 0.72f )
+			if( total_voxels >= 5.0f )
 			{
 				component_ids[extracted_cc_cnt++] = i;
 				strcat(buffer," <===");
@@ -212,17 +264,13 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 	}
 
 	// just make binary
-	{
-		VOL_VOLVALUERANGE	range;
-		range.min.uint8 = 1;
-		range.max.uint8 = 255;
-
-		// do thresholding
-		VOL_ThresholdingMinMax(mask, 0, &range );
-	}
+	VOL_ThresholdingMinMax(mask, 0, &threshold_range);
 
 	// Final masking to obtain vessel signal volume
 	VOL_DilateBinaryVolumeBySphere(mask, 0, 1.9f);
+	VOL_ErodeBinaryVolumeBySphere(mask, 0, 1.9f);
+
+	VOL_RemoveCavity(mask, 0);
 
 	return mask;
 }
