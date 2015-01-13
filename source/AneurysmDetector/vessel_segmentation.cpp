@@ -143,7 +143,7 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 
 	VOL_VOLVALUERANGE threshold_range;
 	threshold_range.min.uint8 = 1;
-	threshold_range.max.uint8 = 1;
+	threshold_range.max.uint8 = 255;
 
 	// Region growing
 	{
@@ -162,6 +162,9 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 		short*** src_data = (short***)original->array4D[0];
 		short    seed_th  = (short)(brain_mean + brain_sigma * 3.0f);
 		int      seed_num = 0;
+
+		sprintf(buffer, "--- Threshold for seed: %d", seed_th);
+		CircusCS_AppendLogFile(log_file_name, buffer);
 
 		for(int k = z0; k < z_end; k++)
 		for(int j = y0; j < y_end; j++)
@@ -182,27 +185,23 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 			}
 		}
 
-		// Set growing area (thresholding)
-		{
-			VOL_VOLVALUERANGE	src_range;
-			src_range.min.sint16 = (short)(brain_mean + brain_sigma * 2.5f);
-			src_range.max.sint16 = VOL_MAX_OF_SINT16;
+		VOL_VOLVALUERANGE	growing_range;
+		growing_range.min.sint16 = (short)(brain_mean + brain_sigma * 2.5f);
+		growing_range.max.sint16 = VOL_MAX_OF_SINT16;
 
-			sprintf(buffer, "--- Vessel threshold: %d", src_range.min.sint16);
-			CircusCS_AppendLogFile(log_file_name, buffer);
-		}
-	
+		sprintf(buffer, "--- Threshold for region growing: %d", growing_range.min.sint16);
+		CircusCS_AppendLogFile(log_file_name, buffer);
+			
 		int num_voxels = VOL_RegionGrowingSeededByPoints(
 							mask,
 							0,
-							&threshold_range,
+							&growing_range,
 							VOL_NEIGHBOURTYPE_26,
 							seed_array);
-
-		// do thresholding
-		threshold_range.max.uint8 = 255;
-		total_voxels = VOL_ThresholdingMinMax(mask, 0, &threshold_range);
 	}
+
+	// Counting the number of extracted voxels 
+	total_voxels = VOL_ThresholdingMinMax(mask, 0, &threshold_range);
 
 	// Labeling and vessel selection
 	{
