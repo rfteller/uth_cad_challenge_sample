@@ -198,6 +198,8 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 							&growing_range,
 							VOL_NEIGHBOURTYPE_26,
 							seed_array);
+		
+		VOL_ConvertVoxelUnit(mask, 0, VOL_VALUEUNIT_UINT8, NULL, NULL, VOL_CONVERTUNIT_TYPE_DIRECT);
 	}
 
 	// Counting the number of extracted voxels 
@@ -239,7 +241,7 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 				ngy,
 				ngz);
 
-			if( total_voxels >= 5.0f )
+			if( volume_percentage >= 5.0f )
 			{
 				component_ids[extracted_cc_cnt++] = i;
 				strcat(buffer," <===");
