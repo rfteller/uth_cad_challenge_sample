@@ -15,16 +15,9 @@ void getStaticticsOfBrainLevel(
 	float* brain_mean,
 	float* brain_sigma);
 
-VOL_INTBOX3D* getBrainBox(
-	VOL_RAWVOLUMEDATA* original,
-	float brain_mean,
-	float brain_sigma,
-	char* log_file_name);
-
 VOL_RAWVOLUMEDATA* getVesselMask(
 	VOL_RAWVOLUMEDATA* original,
 	VOL_SIZE3D* voxel_size,
-	VOL_INTBOX3D* brain_box,
 	float brain_mean,
 	float brain_sigma,
 	char* log_file_name);

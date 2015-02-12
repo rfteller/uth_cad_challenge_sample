@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	// Check the number of arguments
 	if(argc < 4 || argc > 5) 
 	{
-		fprintf(stderr, "[Usage] AneurysmDetector.exe [input path] [putput path] [number of cores]");
+		fprintf(stderr, "[Usage] AneurysmDetector.exe [input path] [output path] [number of cores]");
 		fprintf(stderr, " [mode (1:detection(default), 2:feature extraction only)]\n");	
 		return -1;
 	}

@@ -69,69 +69,9 @@ getStaticticsOfBrainLevel(VOL_RAWVOLUMEDATA* volume, float* brain_mean, float* b
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-VOL_INTBOX3D*
-getBrainBox(VOL_RAWVOLUMEDATA* original, float brain_mean, float brain_sigma, char* log_file_name)
-{
-	VOL_INTSIZE3D		matrix_size;
-	char				buffer[512];
-
-	VOL_RAWVOLUMEDATA* mask = VOL_DuplicateRawVolumeData(original);
-
-	// scale down
-	matrix_size.width  = original->matrixSize->width/4;
-	matrix_size.height = original->matrixSize->height/4;
-	matrix_size.depth  = original->matrixSize->depth/4;
-	VOL_ScaleRawVolumeData(mask, &matrix_size, VOL_SCALING_METHOD_LINEAR);
-
-	// Initial Segmentation (thresholding)
-	{
-		VOL_VOLVALUERANGE	range;
-		
-		range.min.sint16 = (short)(brain_mean - brain_sigma * 2);
-		range.max.sint16 = 10000;
-
-		sprintf(buffer, "--- Head threshold: %d", range.min.sint16);
-		CircusCS_AppendLogFile(log_file_name, buffer);
-
-		VOL_ThresholdingMinMax(mask, 0, &range);
-		VOL_ConvertVoxelUnit(mask,0,VOL_VALUEUNIT_UINT8,NULL,NULL,VOL_CONVERTUNIT_TYPE_DIRECT);
-	}
-
-	// remove head surface
-	{
-		CircusCS_AppendLogFile(log_file_name, "Remove head surface");
-
-		VOL_AttachOffsetZ(mask,  12, VOL_RESIZE_BACKGROUNDTYPE_BORDERCOPY_MIRROR);
-		VOL_AttachOffsetXY(mask, 12, VOL_RESIZE_BACKGROUNDTYPE_ZERO);
-
-		// Set remove radius depend on voxel(pixel) size	
-		VOL_DilateBinaryVolumeBySphere(mask, 0, 5.9f);
-		VOL_RemoveCavity(mask,0);	
-		VOL_ErodeBinaryVolumeBySphere(mask, 0, 5.9f);
-		VOL_ErodeBinaryVolumeBySphere(mask, 0, 7.9f);
-
-		VOL_RemoveOffsetXY(mask, 12);
-		VOL_RemoveOffsetZ(mask,  12);
-	}
-
-	// scale up (recover)
-	matrix_size.width  = original->matrixSize->width;
-	matrix_size.height = original->matrixSize->height;
-	matrix_size.depth  = original->matrixSize->depth;
-	VOL_ScaleRawVolumeData(mask, &matrix_size, VOL_SCALING_METHOD_NEAREST_NEIGHBOUR);
-
-	VOL_INTBOX3D* ret = VOL_GetBoundingBoxOfBinaryVolume(mask, 0);
-	
-	VOL_DeleteRawVolumeData(mask);
-
-	return ret;
-}
-
-
 VOL_RAWVOLUMEDATA* getVesselMask(
 	VOL_RAWVOLUMEDATA* original,
 	VOL_SIZE3D* voxel_size,
-	VOL_INTBOX3D* brain_box,
 	float brain_mean,
 	float brain_sigma,
 	char* log_file_name)
@@ -230,16 +170,12 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 
 			volume_percentage = (float)cc_data->nVoxelsOfComponents[i]/(float)total_voxels*100.0f;
 			
-			ngx = (centor_of_gravity.x-(float)brain_box->origin->x)/(float)brain_box->size->width;
-			ngy = (centor_of_gravity.y-(float)brain_box->origin->y)/(float)brain_box->size->height;
-			ngz = (centor_of_gravity.z-(float)brain_box->origin->z)/(float)brain_box->size->depth;
-
-			sprintf(buffer, "  %d: volume=%3.2f %%, G =(%3.2f, %3.2f, %3.2f)",
+			sprintf(buffer, "  %d: volume=%3.2f %%, G =(%.1f, %.1f, %.1f)",
 				i,
 				volume_percentage,
-				ngx,
-				ngy,
-				ngz);
+				centor_of_gravity.x,
+				centor_of_gravity.y,
+				centor_of_gravity.z);
 
 			if( volume_percentage >= 5.0f )
 			{

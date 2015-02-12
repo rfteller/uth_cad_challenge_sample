@@ -22,12 +22,7 @@
 
 using namespace std;
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-VOL_INTBOX3D* brain_box  = NULL;
-VOL_INTBOX3D* vessel_box = NULL;
-
-////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 VOL_RAWVOLUMEDATA* vesselSegmentation(
 	VOL_RAWVOLUMEDATA* volume,
@@ -39,18 +34,15 @@ VOL_RAWVOLUMEDATA* vesselSegmentation(
 
 	CircusCS_AppendLogFile(log_file_name, ">> get statictics of brain level");
 	getStaticticsOfBrainLevel(volume, &brain_mean, &brain_sigma);
+
 	sprintf(buffer, "Brain level: mean: %3.1f (stddev: %3.1f)", brain_mean, brain_sigma);
 	CircusCS_AppendLogFile(log_file_name, buffer);
-
-	CircusCS_AppendLogFile(log_file_name, ">> get brain box");
-	brain_box = getBrainBox(volume, brain_mean, brain_sigma, log_file_name);
 
 	CircusCS_AppendLogFile(log_file_name, ">> get vessel mask");
 	
 	VOL_RAWVOLUMEDATA* ret = getVesselMask(
 		volume,
 		voxel_size,
-		brain_box,
 		brain_mean,
 		brain_sigma,
 		log_file_name);
@@ -143,7 +135,7 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 	CircusCS_AppendLogFile(log_file_name, "Vessel segmentation");
 
 	VOL_RAWVOLUMEDATA* vessel_mask = vesselSegmentation(volume, &iso_voxel_size, log_file_name);
-
+	
 	if( vessel_mask == NULL )
 	{
 		CircusCS_AppendLogFile(log_file_name, "Failed to extract vessel region");
@@ -151,13 +143,12 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 		VOL_DeleteRawVolumeData(volume);
 		return -1;
 	}
-	else  // Cropping
-	{
-		vessel_box = VOL_GetBoundingBoxOfBinaryVolume(vessel_mask, 0);
+
+	// Cropping
+	VOL_INTBOX3D* vessel_box = VOL_GetBoundingBoxOfBinaryVolume(vessel_mask, 0);
 		
-		VOL_ResizeRawVolumeData(volume,      vessel_box, VOL_RESIZE_BACKGROUNDTYPE_ZERO);
-		VOL_ResizeRawVolumeData(vessel_mask, vessel_box, VOL_RESIZE_BACKGROUNDTYPE_ZERO);
-	}
+	VOL_ResizeRawVolumeData(volume,      vessel_box, VOL_RESIZE_BACKGROUNDTYPE_ZERO);
+	VOL_ResizeRawVolumeData(vessel_mask, vessel_box, VOL_RESIZE_BACKGROUNDTYPE_ZERO);
 	//------------------------------------------------------------------------------------------
 
 	//------------------------------------------------------------------------------------------
