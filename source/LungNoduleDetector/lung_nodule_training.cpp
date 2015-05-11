@@ -7,7 +7,8 @@
 #include <windows.h>
 #include <shlwapi.h>
 
-#include "common.h"
+#include "lung_nodule_common.h"
+#include "lung_nodule_training.h"
 
 #include "..\MachineLearning\example_set.h"
 #include "..\MachineLearning\mahalanobis_distance.h"
@@ -16,7 +17,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-int aneurysm_detector_training(char* configuration_file_name, int core_num)
+int lung_nodule_detector_training(char* configuration_file_name, int core_num)
 {
 	char tmp_path[1024], out_path[1024], in_path[1024];
 	vector<string> in_path_list;
@@ -104,7 +105,6 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 	char out_classifier_file_name[1024];
 	
 	sprintf(out_classifier_file_name, "%s\\%s", out_path, CLASSIFIER_FILE_NAME);
-	//fprintf(stderr, "%s\n", out_classifier_file_name);
 	
 	EXAMPLESET* dataset = new EXAMPLESET;
 		

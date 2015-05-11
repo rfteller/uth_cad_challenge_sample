@@ -91,10 +91,10 @@
     <ClCompile Include="source\MachineLearning\mahalanobis_distance\write_mahalanobis_distance_ratio.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
-    <ClCompile Include="source\AneurysmDetector\detection.cpp" />
-    <ClCompile Include="source\AneurysmDetector\detector_main.cpp" />
     <ClCompile Include="source\AneurysmDetector\vessel_segmentation.cpp" />
-    <ClCompile Include="source\AneurysmDetector\check_answer.cpp" />
+    <ClCompile Include="source\AneurysmDetector\aneurysm_detection.cpp" />
+    <ClCompile Include="source\AneurysmDetector\aneurysm_detector_main.cpp" />
+    <ClCompile Include="source\AneurysmDetector\check_answer_for_aneurysm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\MachineLearning\example_set.h">
@@ -112,10 +112,10 @@
     <ClInclude Include="source\MachineLearning\nr2_c211\nrutil.h">
       <Filter>MachineLearning</Filter>
     </ClInclude>
-    <ClInclude Include="source\AneurysmDetector\detection.h" />
     <ClInclude Include="source\AneurysmDetector\vessel_segmentation.h" />
-    <ClInclude Include="source\AneurysmDetector\check_answer.h" />
-    <ClInclude Include="source\AneurysmDetector\common.h" />
+    <ClInclude Include="source\AneurysmDetector\aneurysm_common.h" />
+    <ClInclude Include="source\AneurysmDetector\aneurysm_detection.h" />
+    <ClInclude Include="source\AneurysmDetector\check_answer_for_aneurysm.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MachineLearning">

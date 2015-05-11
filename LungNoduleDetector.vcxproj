@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\AneurysmDetector\aneurysm_training.cpp" />
-    <ClCompile Include="source\AneurysmDetector\aneurysm_training_main.cpp" />
+    <ClCompile Include="source\LungNoduleDetector\check_answer_for_lung_nodule.cpp" />
+    <ClCompile Include="source\LungNoduleDetector\lung_nodule_detection.cpp" />
+    <ClCompile Include="source\LungNoduleDetector\lung_nodule_detector_main.cpp" />
+    <ClCompile Include="source\LungNoduleDetector\lung_segmentation.cpp" />
     <ClCompile Include="source\MachineLearning\common\delete_matrix.cpp" />
     <ClCompile Include="source\MachineLearning\common\inverse_matrix.cpp" />
     <ClCompile Include="source\MachineLearning\common\io_matrix.cpp" />
@@ -53,8 +55,10 @@
     <ClCompile Include="source\MachineLearning\nr2_c211\nrutil.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\AneurysmDetector\aneurysm_common.h" />
-    <ClInclude Include="source\AneurysmDetector\aneurysm_training.h" />
+    <ClInclude Include="source\LungNoduleDetector\check_answer_for_lung_nodule.h" />
+    <ClInclude Include="source\LungNoduleDetector\lung_nodule_common.h" />
+    <ClInclude Include="source\LungNoduleDetector\lung_nodule_detection.h" />
+    <ClInclude Include="source\LungNoduleDetector\lung_segmentation.h" />
     <ClInclude Include="source\MachineLearning\example_set.h" />
     <ClInclude Include="source\MachineLearning\gaussian_distribution.h" />
     <ClInclude Include="source\MachineLearning\mahalanobis_distance.h" />
@@ -62,10 +66,10 @@
     <ClInclude Include="source\MachineLearning\nr2_c211\nrutil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{53AD39E9-7631-49CB-B5AC-080204EFA94F}</ProjectGuid>
+    <ProjectGuid>{068C1D28-6B90-4A4E-AA08-012FBD554A45}</ProjectGuid>
     <RootNamespace>SampleCADPlugin</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>AneurysmDetector_training</ProjectName>
+    <ProjectName>LungNoduleDetector</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -161,11 +165,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>VOL_libraries/VOL-1.2/include;VOL_libraries/VOLbinary-1.0/include;VOL_libraries/VOLfile-1.1/include;VOL_libraries/VOLfilter-1.0/include;circus_cs_plugin_sdk/LibCircusCS/source;circus_cs_plugin_sdk/libjpeg/include;circus_cs_plugin_sdk/libpng-1.2.51/include;circus_cs_plugin_sdk/zlib-1.2.8/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>VOL-1.2.lib;VOLbinary-1.0.lib;VOLfile-1.1.lib;VOLfilter-1.0.lib;LibCircusCS.lib;zlib.lib;libpng.lib;libjpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -175,8 +178,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>VOL_libraries/VOL-1.2/lib/$(PlatformToolset)/$(Platform);VOL_libraries/VOLbinary-1.0/lib/$(PlatformToolset)/$(Platform);VOL_libraries/VOLfile-1.1/lib/$(PlatformToolset)/$(Platform);VOL_libraries/VOLfilter-1.0/lib/$(PlatformToolset)/$(Platform);circus_cs_plugin_sdk/LibCircusCS/lib/$(Platform);circus_cs_plugin_sdk/libjpeg/lib/$(PlatformToolset)/$(Platform);circus_cs_plugin_sdk/libpng-1.2.51/lib/$(PlatformToolset)/$(Platform);circus_cs_plugin_sdk/zlib-1.2.8/lib/$(PlatformToolset)/$(Platform)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -217,11 +219,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>VOL_libraries/VOL-1.2/include;VOL_libraries/VOLbinary-1.0/include;VOL_libraries/VOLfile-1.1/include;VOL_libraries/VOLfilter-1.0/include;circus_cs_plugin_sdk/LibCircusCS/source;circus_cs_plugin_sdk/libjpeg/include;circus_cs_plugin_sdk/libpng-1.2.51/include;circus_cs_plugin_sdk/zlib-1.2.8/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>VOL-1.2.lib;VOLbinary-1.0.lib;VOLfile-1.1.lib;VOLfilter-1.0.lib;LibCircusCS.lib;zlib.lib;libpng.lib;libjpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -231,8 +232,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>VOL_libraries/VOL-1.2/lib/$(PlatformToolset)/$(Platform);VOL_libraries/VOLbinary-1.0/lib/$(PlatformToolset)/$(Platform);VOL_libraries/VOLfile-1.1/lib/$(PlatformToolset)/$(Platform);VOL_libraries/VOLfilter-1.0/lib/$(PlatformToolset)/$(Platform);circus_cs_plugin_sdk/LibCircusCS/lib/$(Platform);circus_cs_plugin_sdk/libjpeg/lib/$(PlatformToolset)/$(Platform);circus_cs_plugin_sdk/libpng-1.2.51/lib/$(PlatformToolset)/$(Platform);circus_cs_plugin_sdk/zlib-1.2.8/lib/$(PlatformToolset)/$(Platform)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

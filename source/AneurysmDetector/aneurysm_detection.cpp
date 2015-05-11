@@ -13,10 +13,10 @@
 #include "VOLfilter.h"
 #include "LibCircusCS.h"
 
-#include "common.h"
-#include "detection.h"
-#include "check_answer.h"
+#include "aneurysm_common.h"
+#include "aneurysm_detection.h"
 #include "vessel_segmentation.h"
+#include "check_answer_for_aneurysm.h"
 #include "..\MachineLearning\example_set.h"
 #include "..\MachineLearning\mahalanobis_distance.h"
 

@@ -4,13 +4,10 @@
     <ClCompile Include="source\MachineLearning\gaussian_distribution\calculate_gaussian_distribution.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
-    <ClCompile Include="source\MachineLearning\common\delete_matrix.cpp">
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\calculate_mahalanobis_distance_ratio.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
     <ClCompile Include="source\MachineLearning\mahalanobis_distance\calculate_mahalanobis_distance.cpp">
-      <Filter>MachineLearning</Filter>
-    </ClCompile>
-    <ClCompile Include="source\MachineLearning\mahalanobis_distance\calculate_mahalanobis_distance_ratio.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
     <ClCompile Include="source\MachineLearning\example_set\delete_example_data.cpp">
@@ -25,10 +22,13 @@
     <ClCompile Include="source\MachineLearning\mahalanobis_distance\delete_mahalanobis_distance_ratio_classifier.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
+    <ClCompile Include="source\MachineLearning\common\delete_matrix.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
     <ClCompile Include="source\MachineLearning\mahalanobis_distance\delete_mdc_param.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
-    <ClCompile Include="source\MachineLearning\nr2_c211\lubksb.c">
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\mahalanobis_distance_array.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
     <ClCompile Include="source\MachineLearning\common\inverse_matrix.cpp">
@@ -43,13 +43,16 @@
     <ClCompile Include="source\MachineLearning\common\io_matrix.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
+    <ClCompile Include="source\MachineLearning\nr2_c211\lubksb.c">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
     <ClCompile Include="source\MachineLearning\nr2_c211\ludcmp.c">
       <Filter>MachineLearning</Filter>
     </ClCompile>
-    <ClCompile Include="source\MachineLearning\mahalanobis_distance\mahalanobis_distance_array.cpp">
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\mahalanobis_distance_ratio_array.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
-    <ClCompile Include="source\MachineLearning\mahalanobis_distance\mahalanobis_distance_ratio_array.cpp">
+    <ClCompile Include="source\MachineLearning\common\separate_std_string.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
     <ClCompile Include="source\MachineLearning\common\multiply_matrices.cpp">
@@ -79,20 +82,17 @@
     <ClCompile Include="source\MachineLearning\example_set\num_of_examples.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
-    <ClCompile Include="source\MachineLearning\mahalanobis_distance\write_mahalanobis_distance_ratio.cpp">
-      <Filter>MachineLearning</Filter>
-    </ClCompile>
     <ClCompile Include="source\MachineLearning\example_set\num_of_labeled_examples.cpp">
-      <Filter>MachineLearning</Filter>
-    </ClCompile>
-    <ClCompile Include="source\MachineLearning\common\separate_std_string.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
     <ClCompile Include="source\MachineLearning\mahalanobis_distance\training_mahalanobis_distance_ratio_classifier.cpp">
       <Filter>MachineLearning</Filter>
     </ClCompile>
-    <ClCompile Include="source\AneurysmDetector\aneurysm_training.cpp" />
-    <ClCompile Include="source\AneurysmDetector\aneurysm_training_main.cpp" />
+    <ClCompile Include="source\MachineLearning\mahalanobis_distance\write_mahalanobis_distance_ratio.cpp">
+      <Filter>MachineLearning</Filter>
+    </ClCompile>
+    <ClCompile Include="source\LungNoduleDetector\lung_nodule_training_main.cpp" />
+    <ClCompile Include="source\LungNoduleDetector\lung_nodule_training.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\MachineLearning\example_set.h">
@@ -101,21 +101,21 @@
     <ClInclude Include="source\MachineLearning\gaussian_distribution.h">
       <Filter>MachineLearning</Filter>
     </ClInclude>
-    <ClInclude Include="source\MachineLearning\nr2_c211\nrutil.h">
-      <Filter>MachineLearning</Filter>
-    </ClInclude>
     <ClInclude Include="source\MachineLearning\mahalanobis_distance.h">
       <Filter>MachineLearning</Filter>
     </ClInclude>
     <ClInclude Include="source\MachineLearning\nr2_c211\nr.h">
       <Filter>MachineLearning</Filter>
     </ClInclude>
-    <ClInclude Include="source\AneurysmDetector\aneurysm_common.h" />
-    <ClInclude Include="source\AneurysmDetector\aneurysm_training.h" />
+    <ClInclude Include="source\MachineLearning\nr2_c211\nrutil.h">
+      <Filter>MachineLearning</Filter>
+    </ClInclude>
+    <ClInclude Include="source\LungNoduleDetector\lung_nodule_training.h" />
+    <ClInclude Include="source\LungNoduleDetector\lung_nodule_common.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MachineLearning">
-      <UniqueIdentifier>{ebfc124e-b934-4838-ae29-c280c28562b7}</UniqueIdentifier>
+      <UniqueIdentifier>{2f1ec92d-476e-4086-aa97-d9a78e766e4d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include "check_answer.h"
+#include "check_answer_for_aneurysm.h"
 #include "..\MachineLearning\example_set.h"
 
 #define   DETECTION_THRESHOLD_MM	3.0f
@@ -52,14 +52,18 @@ int check_answer(
 	//------------------------------------------------------------------------------------------
 	// Check answer
 	//------------------------------------------------------------------------------------------
+	unsigned int*** answer_data = (unsigned int***)answer_volume->array4D[0];
+		
 	for(unsigned int n=1; n<=answer_num; n++)
 	{
 		VOL_VECTOR3D	gravity;
+		VOL_INTVECTOR3D	min_pos;
 
 		VOL_GetCenterOfGravityOfComponent(answer_cc, (unsigned long)n, &gravity);
 
 		float distance_min     = 10000.0;
 		int   distance_min_idx = 0;
+
 
 		for(int i=0; i<(int)dataset->examples.size(); i++)
 		{
@@ -71,12 +75,16 @@ int check_answer(
 
 			if(distance < distance_min)
 			{
+				min_pos.x = (int)(cand_properties[i][1] + 0.5f);
+				min_pos.y = (int)(cand_properties[i][2] + 0.5f);
+				min_pos.z = (int)(cand_properties[i][3] + 0.5f);
 				distance_min = distance;
 				distance_min_idx = i;
 			}
 		}
 
-		if(distance_min <= DETECTION_THRESHOLD_MM)
+		if(distance_min <= DETECTION_THRESHOLD_MM
+			|| answer_data[min_pos.z][min_pos.y][min_pos.x] == n)
 		{
 			dataset->examples[distance_min_idx]->label = 1;
 			fprintf(stderr, "%d -> %d (%f)\n", n, distance_min_idx+1, distance_min);

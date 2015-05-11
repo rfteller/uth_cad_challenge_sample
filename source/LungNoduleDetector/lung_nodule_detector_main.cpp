@@ -3,7 +3,7 @@
 #include<stdio.h>
 
 #include "LibCircusCS.h"
-#include "detection.h"
+#include "lung_nodule_detection.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	// Check the number of arguments
 	if(argc < 4 || argc > 5) 
 	{
-		fprintf(stderr, "[Usage] AneurysmDetector.exe [input path] [output path] [number of cores]");
+		fprintf(stderr, "[Usage] LungNoduleDetector.exe [input path] [output path] [number of cores]");
 		fprintf(stderr, " [mode (1:detection(default), 2:feature extraction only)]\n");	
 		return -1;
 	}
@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
 	// Set mode
 	int mode = (argc == 5 && atoi(argv[4]) == 2) ? 2 : 1;
 
-	// Aneurysm detection
-	int candNum = aneurysm_detection_in_mra(
+	// Lung nodule detection
+	int candNum = lung_nodule_detection(
 		in_path, 
 		out_path, 
 		coreNum,

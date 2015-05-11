@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\AneurysmDetector\aneurysm_training.cpp" />
-    <ClCompile Include="source\AneurysmDetector\aneurysm_training_main.cpp" />
+    <ClCompile Include="source\LungNoduleDetector\lung_nodule_training.cpp" />
+    <ClCompile Include="source\LungNoduleDetector\lung_nodule_training_main.cpp" />
     <ClCompile Include="source\MachineLearning\common\delete_matrix.cpp" />
     <ClCompile Include="source\MachineLearning\common\inverse_matrix.cpp" />
     <ClCompile Include="source\MachineLearning\common\io_matrix.cpp" />
@@ -53,8 +53,8 @@
     <ClCompile Include="source\MachineLearning\nr2_c211\nrutil.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\AneurysmDetector\aneurysm_common.h" />
-    <ClInclude Include="source\AneurysmDetector\aneurysm_training.h" />
+    <ClInclude Include="source\LungNoduleDetector\lung_nodule_common.h" />
+    <ClInclude Include="source\LungNoduleDetector\lung_nodule_training.h" />
     <ClInclude Include="source\MachineLearning\example_set.h" />
     <ClInclude Include="source\MachineLearning\gaussian_distribution.h" />
     <ClInclude Include="source\MachineLearning\mahalanobis_distance.h" />
@@ -62,10 +62,10 @@
     <ClInclude Include="source\MachineLearning\nr2_c211\nrutil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{53AD39E9-7631-49CB-B5AC-080204EFA94F}</ProjectGuid>
+    <ProjectGuid>{FCA94906-0571-4A60-896D-DECBA4045213}</ProjectGuid>
     <RootNamespace>SampleCADPlugin</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>AneurysmDetector_training</ProjectName>
+    <ProjectName>LungNoduleDetector_training</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
