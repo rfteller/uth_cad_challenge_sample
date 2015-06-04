@@ -1,3 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      lung_nodule_detection.cpp : Detection of lung nodule in CT images
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define _CRT_SECURE_NO_DEPRECATE
 #define _USE_MATH_DEFINES
 
@@ -22,7 +32,7 @@
 
 using namespace std;
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int lung_nodule_detection(const char* in_path, const char* out_path, int core_num, int mode)	
 {
@@ -36,9 +46,9 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 	sprintf(in_dump_file_name,   "%s\\0.txt", in_path);
 	sprintf(log_file_name,       "%s\\%s",    out_path, LOG_FILE_NAME);
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Get basic DICOM tag value
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	CircusCS_AppendLogFile(log_file_name, "Load DICOM dump data");
 
 	CircusCS_BASICDCMTAGVALUES* basic_tag_values = NULL;
@@ -51,11 +61,11 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		CircusCS_AppendLogFile(log_file_name, buffer);
 		return -1;
 	}
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Load volume data
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	CircusCS_AppendLogFile(log_file_name, "Load volume data");
 
 	VOL_RAWVOLUMEDATA* volume = VOL_NewSingleChannelRawVolumeDataFromFile(
@@ -70,20 +80,20 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		CircusCS_AppendLogFile(log_file_name, "Failed to load volume data: 0.raw");
 		return -1;
 	}
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Lung segmentation
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	CircusCS_AppendLogFile(log_file_name, "Lung segmentation");
 
 	VOL_RAWVOLUMEDATA* lung_shape = VOL_DuplicateRawVolumeData(volume);
 	lung_segmentation(lung_shape);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Isotropic resampling
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	CircusCS_AppendLogFile(log_file_name, "Isotropic resampling");
 	
 	float interpolation_ratio = basic_tag_values->voxelSize_mm->depth 
@@ -109,20 +119,20 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		iso_matrix_size.depth);
 	
 	CircusCS_AppendLogFile(log_file_name, buffer);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Cropping
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	VOL_INTBOX3D* lung_box = VOL_GetBoundingBoxOfBinaryVolume(lung_shape, 0);
 		
 	VOL_ResizeRawVolumeData(volume,     lung_box, VOL_RESIZE_BACKGROUNDTYPE_ZERO);
 	VOL_ResizeRawVolumeData(lung_shape, lung_box, VOL_RESIZE_BACKGROUNDTYPE_ZERO);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	//  Lesion candidate extraction based on shape index
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	CircusCS_AppendLogFile(log_file_name, "Lesion candidate extraction");
 
 	// Calculate shape index
@@ -153,34 +163,34 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 			cand_ptr++;
 		}
 	}
-	//------------------------------------------------------------------------------------------
-
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
+	
+	//----------------------------------------------------------------------------------------------
 	// Labeling
-	//------------------------------------------------------------------------------------------
-	unsigned int num_candidates = VOL_ConnectedComponentAnalysis(
+	//----------------------------------------------------------------------------------------------
+	unsigned int candidates_num = VOL_ConnectedComponentAnalysis(
 										cand_volume,
 										0,
 										VOL_NEIGHBOURTYPE_26);
 	
-	VOL_COMPONENTDATA *aneurysm_cc = VOL_NewComponentData(cand_volume, 0, num_candidates );
+	VOL_COMPONENTDATA *aneurysm_cc = VOL_NewComponentData(cand_volume, 0, candidates_num );
 	
 	// Sort by voxel counts (DESC)
 	VOL_SortComponentsByProperty( aneurysm_cc, VOL_CC_PROPERTY_ID_VOXELCOUNT );
 
-	num_candidates = min(num_candidates, MAX_CANDIDATES);
-	//------------------------------------------------------------------------------------------
+	candidates_num = min(candidates_num, MAX_CANDIDATES);
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Feature extraction (save temporary file)
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	sprintf(buffer, "Feature extraction");
 	CircusCS_AppendLogFile(log_file_name, buffer);
 	
-	vector<vector<float>> cand_properties(num_candidates, vector<float>(12));
-	EXAMPLESET* dataset = new_example_set(num_candidates, NUM_FEATURES);
+	vector<vector<float>> cand_properties(candidates_num, vector<float>(12));
+	EXAMPLESET* dataset = new_example_set(candidates_num, NUM_FEATURES);
 
-	for(unsigned int i=0; i<num_candidates; i++)
+	for(unsigned int i = 0; i < candidates_num; i++)
 	{
 		float           sliceLocation = 0.0f;
 		VOL_VECTOR3D	gravity;
@@ -218,14 +228,26 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		{
 			unsigned int cand_val = *cand_ptr;
 
-			if(0 < cand_val && cand_val <= num_candidates)
+			if(0 < cand_val && cand_val <= candidates_num)
 			{
-				if(*src_ptr < cand_properties[cand_val-1][5]) cand_properties[cand_val-1][5] = *src_ptr;
-				if(*src_ptr > cand_properties[cand_val-1][6]) cand_properties[cand_val-1][6] = *src_ptr;
+				if(*src_ptr < cand_properties[cand_val-1][5])
+				{
+					cand_properties[cand_val-1][5] = *src_ptr;
+				}
+				if(*src_ptr > cand_properties[cand_val-1][6])
+				{
+					cand_properties[cand_val-1][6] = *src_ptr;
+				}
 				cand_properties[cand_val-1][7]  += *src_ptr;
 
-				if(*cv_ptr < cand_properties[cand_val-1][8]) cand_properties[cand_val-1][8] = *cv_ptr;
-				if(*cv_ptr > cand_properties[cand_val-1][9]) cand_properties[cand_val-1][9] = *cv_ptr;
+				if(*cv_ptr < cand_properties[cand_val-1][8])
+				{
+					cand_properties[cand_val-1][8] = *cv_ptr;
+				}
+				if(*cv_ptr > cand_properties[cand_val-1][9])
+				{
+					cand_properties[cand_val-1][9] = *cv_ptr;
+				}
 				cand_properties[cand_val-1][10] += *cv_ptr;
 			}
 
@@ -235,7 +257,7 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		}
 	}
 
-	for(unsigned int i=0; i<num_candidates; i++)
+	for(unsigned int i = 0; i < candidates_num; i++)
 	{
 		cand_properties[i][7]  /= (float)aneurysm_cc->nVoxelsOfComponents[i+1];
 		cand_properties[i][10] /= (float)aneurysm_cc->nVoxelsOfComponents[i+1];
@@ -251,11 +273,11 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 	VOL_DeleteRawVolumeData(cand_volume);
 	VOL_DeleteRawVolumeData(lung_shape);
 	VOL_DeleteComponentData(aneurysm_cc);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// FP reduction and save results
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	if(mode == 2)
 	{
 		check_answer_for_lung_nodule(
@@ -270,9 +292,9 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 	}	
 	else
 	{
-		//--------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------
 		// Classification 
-		//--------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------
 		sprintf(buffer, "Classification");
 		CircusCS_AppendLogFile(log_file_name, buffer);
 
@@ -284,18 +306,18 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		// Sort by Mahalanobis distance (DESC)
 		multimap<float, int, greater<float>> dist_map;
 
-		for(unsigned int i=0; i<num_candidates; i++)
+		for(unsigned int i=0; i<candidates_num; i++)
 		{
 			// Normalization [0.0, 1.0]
 			distance_ratio[i] = (float)(atan(distance_ratio[i])/M_PI_2);
 
 			dist_map.insert(pair<float, int>( distance_ratio[i] , i));
 		}
-		//--------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------
 
-		//--------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------
 		// Save detection results (File name is defined in RESULTS_FileName)
-		//--------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------
 		sprintf(buffer, "Save detection results (%s)", RESULTS_FILE_NAME);
 		CircusCS_AppendLogFile(log_file_name, buffer);
 		{
@@ -319,17 +341,17 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 			}
 			fclose(fp);
 
-			sprintf(buffer, "Final candidates of aneurysm: %d", num_candidates);
+			sprintf(buffer, "Final candidates of aneurysm: %d", candidates_num);
 			CircusCS_AppendLogFile(log_file_name, buffer);
 		}
-		//--------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------
 	}
 
 	CircusCS_DeleteBasicDcmTagValues(basic_tag_values);
 	delete_example_set(dataset);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
 	CircusCS_AppendLogFile(log_file_name, "Finished");
 
-	return num_candidates;
+	return candidates_num;
 }

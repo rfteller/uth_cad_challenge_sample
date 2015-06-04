@@ -1,7 +1,20 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      check_answer_for_lung_nodule.cpp : Judge lesion candidates as true positives or not
+//                                            (same criterion as ANODE'09 study) 
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include "check_answer_for_lung_nodule.h"
 #include "..\MachineLearning\example_set.h"
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int check_answer_for_lung_nodule(
 	const char* in_path,
@@ -79,7 +92,7 @@ int check_answer_for_lung_nodule(
 	//----------------------------------------------------------------------------------------------
 	// Check answer
 	//----------------------------------------------------------------------------------------------
-	for(unsigned int n=1; n<=answer_num; n++)
+	for(unsigned int n = 1; n <= answer_num; n++)
 	{
 		VOL_VECTOR3D	gravity;
 
@@ -88,7 +101,7 @@ int check_answer_for_lung_nodule(
 		float distance_min     = 10000.0;
 		int   distance_min_idx = 0;
 
-		for(int i=0; i<(int)dataset->examples.size(); i++)
+		for(int i = 0; i < (int)dataset->examples.size(); i++)
 		{
 			float dx = (cand_properties[i][1]-gravity.x) * basic_tag_values->voxelSize_mm->width;
 			float dy = (cand_properties[i][2]-gravity.y) * basic_tag_values->voxelSize_mm->height;

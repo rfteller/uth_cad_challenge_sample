@@ -1,3 +1,12 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      lung_nodule_common.h : Common parameters for lung nodule detection
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define DETECTOR_FILE_NAME    "LungNoduleDetector.exe"
 #define RESULTS_FILE_NAME     "lung_nodule_detector_results.txt"

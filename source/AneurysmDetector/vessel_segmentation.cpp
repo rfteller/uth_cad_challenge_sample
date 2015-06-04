@@ -1,3 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      vessel_segmentation.cpp : Vessel segmentation from MRA images
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
@@ -39,7 +49,7 @@ getStaticticsOfBrainLevel(VOL_RAWVOLUMEDATA* volume, float* brain_mean, float* b
 	{
 		int	value = (int)voxels[k][j][i];
 
-		if( value >= MIN_SEARCH && value <= MAX_SEARCH )
+		if(value >= MIN_SEARCH && value <= MAX_SEARCH)
 		{
 			histogram[value] += 1;
 		}
@@ -47,7 +57,7 @@ getStaticticsOfBrainLevel(VOL_RAWVOLUMEDATA* volume, float* brain_mean, float* b
 		
 	average = stddev = count = 0;
 
-	for(int i=MIN_SEARCH; i<=MAX_SEARCH; i++)
+	for(int i = MIN_SEARCH; i <= MAX_SEARCH; i++)
 	{
 		average += (float)(histogram[i]*i);
 		count   += (float)histogram[i];
@@ -151,18 +161,18 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 		int			  extracted_cc_cnt = 0;
 		VOL_VECTOR3D  centor_of_gravity;
 
-		int n_cmps = VOL_ConnectedComponentAnalysis(mask,0,VOL_NEIGHBOURTYPE_26);
+		int cmps_num = VOL_ConnectedComponentAnalysis(mask,0,VOL_NEIGHBOURTYPE_26);
 		
-		VOL_COMPONENTDATA*	cc_data = VOL_NewComponentData(mask, 0, n_cmps);
+		VOL_COMPONENTDATA*	cc_data = VOL_NewComponentData(mask, 0, cmps_num);
 
-		sprintf(buffer, "Vessel shape: %d components", n_cmps);
+		sprintf(buffer, "Vessel shape: %d components", cmps_num);
 		CircusCS_AppendLogFile(log_file_name, buffer);
 
-		if( n_cmps == 0 || cc_data == NULL )	return mask;
+		if(cmps_num == 0 || cc_data == NULL)	return mask;
 
 		VOL_SortComponentsByProperty( cc_data, VOL_CC_PROPERTY_ID_VOXELCOUNT );
 
-		for(int i=1; i<=8&&i<=n_cmps; i++)
+		for(int i = 1; i <= 8 && i <= cmps_num; i++)
 		{
 			float	volume_percentage, ngx, ngy, ngz;
 
@@ -186,7 +196,7 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 		}
 
 		// for the case
-		if( extracted_cc_cnt == 0 )
+		if(extracted_cc_cnt == 0)
 		{
 			CircusCS_AppendLogFile(log_file_name, "Warning: segmentation failed?");
 

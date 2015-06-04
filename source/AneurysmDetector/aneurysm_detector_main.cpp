@@ -1,3 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      aneurysm_detector_main.cpp : Main function of cerebral aneurysm detector
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include<stdio.h>
@@ -5,15 +15,15 @@
 #include "LibCircusCS.h"
 #include "aneurysm_detection.h"
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char *argv[])
 {
 	// Check the number of arguments
 	if(argc < 4 || argc > 5) 
 	{
-		fprintf(stderr, "[Usage] AneurysmDetector.exe [input path] [output path] [number of cores]");
+		fprintf(stderr, "[Usage] AneurysmDetector.exe [input path] [output path]");
+		fprintf(stderr, " [number of cores]");
 		fprintf(stderr, " [mode (1:detection(default), 2:feature extraction only)]\n");	
 		return -1;
 	}

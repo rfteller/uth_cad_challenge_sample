@@ -1,3 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      check_answer_for_lung_nodule.cpp : Judge lesion candidates as true positives or not
+//                                            (same criterion as ANODE'09 study) 
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
 #include <vector>

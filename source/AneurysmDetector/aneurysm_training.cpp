@@ -1,4 +1,14 @@
-#pragma warning(disable:4996)
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      aneurysm_training.cpp : Training program for cerebral aneurysm detection
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
 #include <vector>
@@ -15,7 +25,7 @@
 
 using namespace std;
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int aneurysm_detector_training(char* configuration_file_name, int core_num)
 {
@@ -23,9 +33,9 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 	vector<string> in_path_list;
 	vector<string> feature_data_file_list;
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Load configuration file
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	FILE* fp = fopen(configuration_file_name, "r");
 
 	if(fp == NULL)
@@ -52,11 +62,11 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 	}
 	
 	fclose(fp);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Create feature data
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	char src_data_file_name[1024];
 	char dst_data_file_name[1024];
 	char command_str[1024];
@@ -97,9 +107,9 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 			feature_data_file_list.push_back(dst_data_file_name);
 		}
 	}
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// training
 	//------------------------------------------------------------------------------------------
 	char out_classifier_file_name[1024];
@@ -109,7 +119,7 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 	
 	EXAMPLESET* dataset = new EXAMPLESET;
 		
-	for(int n=0; n<(int)feature_data_file_list.size(); n++)
+	for(int n = 0; n < (int)feature_data_file_list.size(); n++)
 	{
 		fprintf(stderr, "Load feature data: %s\n", feature_data_file_list[n].c_str());
 		
@@ -117,7 +127,7 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 	
 		if(n == 0)  dataset->num_features = tmp_dataset->num_features;
 		
-		for(int i=0; i<(int)tmp_dataset->examples.size(); i++)
+		for(int i = 0; i < (int)tmp_dataset->examples.size(); i++)
 		{
 			dataset->examples.push_back(tmp_dataset->examples[i]);
 		}
@@ -130,7 +140,7 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 
 	delete_example_set(dataset);
 	delete_mahalanobis_distance_ratio_classifier(mdr_classifier);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
 	return 0;
 }

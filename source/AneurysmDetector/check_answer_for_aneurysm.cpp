@@ -1,11 +1,21 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      check_answer_for_aneurysm.cpp : Judge lesion candidates as true positives or not
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include "check_answer_for_aneurysm.h"
 #include "..\MachineLearning\example_set.h"
 
-#define   DETECTION_THRESHOLD_MM	3.0f
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int check_answer(
+int check_answer_for_aneurysm(
 	const char* in_path,
 	CircusCS_BASICDCMTAGVALUES* basic_tag_values,
 	vector<vector<float>>& cand_properties,
@@ -16,9 +26,9 @@ int check_answer(
 
 	sprintf(answer_file_name,  "%s\\0_ans.raw", in_path);
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Load answer volume data
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	CircusCS_AppendLogFile(log_file_name, ">> Load answer volume data");
 
 	VOL_RAWVOLUMEDATA* answer_volume = VOL_NewSingleChannelRawVolumeDataFromFile(
@@ -33,11 +43,11 @@ int check_answer(
 		CircusCS_AppendLogFile(log_file_name, "Failed to load answer volume data: 0_ans.raw");
 		return 0;
 	}
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Labeling
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	unsigned int answer_num = VOL_ConnectedComponentAnalysis(
 								answer_volume,
 								0,
@@ -47,14 +57,14 @@ int check_answer(
 									answer_volume,
 									0,
 									answer_num);
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	// Check answer
-	//------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	unsigned int*** answer_data = (unsigned int***)answer_volume->array4D[0];
 		
-	for(unsigned int n=1; n<=answer_num; n++)
+	for(unsigned int n = 1; n <= answer_num; n++)
 	{
 		VOL_VECTOR3D	gravity;
 		VOL_INTVECTOR3D	min_pos;
@@ -65,7 +75,7 @@ int check_answer(
 		int   distance_min_idx = 0;
 
 
-		for(int i=0; i<(int)dataset->examples.size(); i++)
+		for(int i = 0; i < (int)dataset->examples.size(); i++)
 		{
 			float dx = (cand_properties[i][1]-gravity.x) * basic_tag_values->voxelSize_mm->width;
 			float dy = (cand_properties[i][2]-gravity.y) * basic_tag_values->voxelSize_mm->height;

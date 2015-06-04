@@ -1,3 +1,14 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      lung_nodule_training_main.cpp : Main function of training program 
+//                                          for lung nodule detection
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
@@ -6,7 +17,7 @@
 
 #include "lung_nodule_training.h"
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 int main(int argc, char *argv[])
@@ -14,7 +25,8 @@ int main(int argc, char *argv[])
 	// Check the number of arguments
 	if(argc != 3) 
 	{
-		fprintf(stderr, "[Usage] LungNoduleDetector_training.exe [configuration file name] [number of cores]\n");	
+		fprintf(stderr, "[Usage] LungNoduleDetector_training.exe [configuration file name]");
+		fprintf(stderr, " [number of cores]\n");	
 		return -1;
 	}
 

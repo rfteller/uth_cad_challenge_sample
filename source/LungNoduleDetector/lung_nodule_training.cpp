@@ -1,4 +1,14 @@
-#pragma warning(disable:4996)
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      lung_nodule_training.cpp : Training program for lung nodule detection
+//
+//    [CAUTION] The sample codes are permitted to use only for research purposes.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
 #include <vector>

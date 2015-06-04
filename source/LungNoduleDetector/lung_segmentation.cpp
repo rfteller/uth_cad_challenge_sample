@@ -1,3 +1,20 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    Sample codes for UTH CAD Challenge
+//
+//	      lung_segmentation.cpp : Lung are segmentation from CT images
+//
+//    [CAUTION 1] The sample codes are permitted to use only for research purposes.
+//
+//    [CAUTION 2] If you use this algorithm, you should cite the paper: 
+//                   Nomura Y et al., "Reduction of false positives at vessel bifurcations in
+//                   omputerized detection of lung nodules," Journal of Biomedical Graphics and
+//                   Computing, vol.4, no.3, pp.36-46, 2014.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -50,13 +67,13 @@ search_peak(unsigned int* histo_array, int length)
 
 // get air peak, and lung peak
 void
-get_calibration(VOL_RAWVOLUMEDATA* volume, VOL_RAWVOLUMEDATA* uint8labels, short* lung_level)
+get_calibration(VOL_RAWVOLUMEDATA* volume, VOL_RAWVOLUMEDATA* labels, short* lung_level)
 {
 	short           lung_histo_min = -1000;
 	short           lung_histo_max = -800;
 	unsigned int    lung_histo[200];
 	short*			signal_ptr = (short*)volume->data[0];
-	unsigned char*	label_ptr  = (unsigned char*)uint8labels->data[0];
+	unsigned char*	label_ptr  = (unsigned char*)labels->data[0];
 	int				length     = VOL_GetNumberOfVoxels(volume);
 
 	for(int i = 0; i < 200; i++)  lung_histo[i] = 0;
@@ -94,20 +111,28 @@ make_uint8_volume_binary(VOL_RAWVOLUMEDATA* volume)
 
 // general purpose label extractor (max label value <= 255)
 void
-extract_components(VOL_RAWVOLUMEDATA* volume,int nExtCmps, unsigned int* CCs, int connectivity_type)
+extract_components(
+	VOL_RAWVOLUMEDATA* volume,
+	int extracted_cc_cnt,
+	unsigned int* component_ids,
+	int connectivity_type)
 {
-	int					nCmps = VOL_ConnectedComponentAnalysis(volume,0,connectivity_type);
-	VOL_COMPONENTDATA*	ccData = VOL_NewComponentData( volume, 0, nCmps );
-
-	//fprintf(stderr,"... CCA: %d cmps\n",nCmps);
-
-	if( nCmps == 0 || ccData == NULL )	return;
-
-	VOL_SortComponentsByProperty( ccData, VOL_CC_PROPERTY_ID_VOXELCOUNT );
+	int	cmps_num = VOL_ConnectedComponentAnalysis(
+						volume,
+						0,
+						connectivity_type);
 	
-	VOL_ExtractComponents( ccData, nExtCmps, CCs );
+	VOL_COMPONENTDATA* cc_data = VOL_NewComponentData(volume, 0, cmps_num);
 
-	VOL_DeleteComponentData(ccData);
+	//fprintf(stderr,"... CCA: %d cmps\n", cmps_num);
+
+	if(cmps_num == 0 || cc_data == NULL)	return;
+
+	VOL_SortComponentsByProperty(cc_data, VOL_CC_PROPERTY_ID_VOXELCOUNT);
+	
+	VOL_ExtractComponents(cc_data, extracted_cc_cnt, component_ids);
+
+	VOL_DeleteComponentData(cc_data);
 }
 
 
@@ -115,10 +140,14 @@ extract_components(VOL_RAWVOLUMEDATA* volume,int nExtCmps, unsigned int* CCs, in
 void
 extract_component_of_minimum_Z(VOL_RAWVOLUMEDATA* bin_volume, int search_offset_z)
 {
-	int          width   = bin_volume->matrixSize->width;
-	int		     height  = bin_volume->matrixSize->height;
-	int		     depth   = bin_volume->matrixSize->depth;
-	unsigned int cmp_num = VOL_ConnectedComponentAnalysis(bin_volume, 0, VOL_NEIGHBOURTYPE_26);
+	int width  = bin_volume->matrixSize->width;
+	int	height = bin_volume->matrixSize->height;
+	int	depth  = bin_volume->matrixSize->depth;
+
+	unsigned int cmp_num = VOL_ConnectedComponentAnalysis(
+								bin_volume,
+								0,
+								VOL_NEIGHBOURTYPE_26);
 
 	VOL_COMPONENTDATA*	cc_data = VOL_NewComponentData(bin_volume, 0, cmp_num);
 
@@ -127,8 +156,8 @@ extract_component_of_minimum_Z(VOL_RAWVOLUMEDATA* bin_volume, int search_offset_
 	if(cmp_num == 0 || cc_data == NULL)	return;
 
 	unsigned long  found  = 0;
-	unsigned long* voxels = (unsigned long*)bin_volume->data[0] + search_offset_z * width * height;
-
+	unsigned long* voxels = (unsigned long*)bin_volume->data[0]
+							+ search_offset_z * width * height;
 
 	for(int k = search_offset_z; k < depth  && found == 0; k++)
 	for(int j = 0;               j < height && found == 0; j++)
@@ -137,7 +166,7 @@ extract_component_of_minimum_Z(VOL_RAWVOLUMEDATA* bin_volume, int search_offset_
 		if((found = *voxels) == 0)	voxels++;
 	}
 
-	VOL_ExtractComponent(cc_data, found );	// only 1 component
+	VOL_ExtractComponent(cc_data, found);	// only 1 component
 
 	VOL_DeleteComponentData(cc_data);
 }
@@ -297,9 +326,9 @@ body_trunk_extraction(VOL_RAWVOLUMEDATA* volume, short threshold)
 	label_slice_size.height = half_size->height;
 	label_slice_size.depth  = 1;
 	
-	unsigned int CCs[1] = {1};
+	unsigned int component_ids[1] = {1};
 
-	for(int k=0; k<half_size->depth;  k++)
+	for(int k = 0; k < half_size->depth; k++)
 	{
 		VOL_RAWVOLUMEDATA* tmp_volume = VOL_NewSingleChannelRawVolumeData(
 											&label_slice_size,
@@ -309,14 +338,14 @@ body_trunk_extraction(VOL_RAWVOLUMEDATA* volume, short threshold)
 		{
 			unsigned short*** tmp_data = (unsigned short***)tmp_volume->array4D[0];
 
-			for(int j=0; j<label_slice_size.height; j++)
-			for(int i=0; i<label_slice_size.width;  i++)
+			for(int j = 0; j < label_slice_size.height; j++)
+			for(int i = 0; i < label_slice_size.width;  i++)
 			{
 				tmp_data[0][j][i] = mask_data[k][j][i];
 			}
 		}
 
-		extract_components(tmp_volume, 1, CCs, VOL_NEIGHBOURTYPE_18);
+		extract_components(tmp_volume, 1, component_ids, VOL_NEIGHBOURTYPE_18);
 
 		VOL_RemoveCavity(tmp_volume, 0);
 
@@ -359,7 +388,7 @@ simple_bronchi_segmentation(VOL_RAWVOLUMEDATA* volume, VOL_RAWVOLUMEDATA* lung_s
 	int            length      = VOL_GetNumberOfVoxels(volume);
 
 	// included in the input, but lower than BRONCHI_THRESHOLD
-	for(int i=0;i<length;i++)
+	for(int i = 0; i < length; i++)
 	{
 		*bronchi_ptr = ( *lung_ptr != 0 && *src_ptr < threshold ) ? 1 : 0;
 
@@ -411,7 +440,7 @@ simple_bone_segmentation(VOL_RAWVOLUMEDATA* volume, short threshold)
 	int            length   = VOL_GetNumberOfVoxels(volume);
 
 	// simple thresholding
-	for(int i=0; i<length; i++)
+	for(int i = 0; i < length; i++)
 	{
 		*bone_ptr = (*src_ptr > threshold ) ? 1 : 0;
 
@@ -424,8 +453,8 @@ simple_bone_segmentation(VOL_RAWVOLUMEDATA* volume, short threshold)
 
 	// extract the largest area
 	{
-		unsigned int	CCs[1] = {1};
-		extract_components(bone_shape, 1, CCs, VOL_NEIGHBOURTYPE_26 );
+		unsigned int component_ids[1] = {1};
+		extract_components(bone_shape, 1, component_ids, VOL_NEIGHBOURTYPE_26);
 
 		VOL_ConvertVoxelUnit(
 			bone_shape,
@@ -462,7 +491,7 @@ lung_resegmentation(VOL_RAWVOLUMEDATA* signal_volume,
 		range.min.sint16 = VOL_MIN_OF_SINT16;
 		range.max.sint16 = LUNG_THRESHOLD_JOIN;
 
-		VOL_ThresholdingMinMax( ret, 0, &range );
+		VOL_ThresholdingMinMax(ret, 0, &range);
 
 		VOL_ConvertVoxelUnit(ret,0,VOL_VALUEUNIT_UINT8,NULL,NULL,VOL_CONVERTUNIT_TYPE_DIRECT);
 
@@ -476,9 +505,9 @@ lung_resegmentation(VOL_RAWVOLUMEDATA* signal_volume,
 
 	// largest
 	{
-		unsigned int CCs[1] = {1};
+		unsigned int component_ids[1] = {1};
 
-		extract_components(ret, 1, CCs, VOL_NEIGHBOURTYPE_26);
+		extract_components(ret, 1, component_ids, VOL_NEIGHBOURTYPE_26);
 
 		VOL_ConvertVoxelUnit(ret, 0, VOL_VALUEUNIT_UINT8, NULL, NULL, VOL_CONVERTUNIT_TYPE_DIRECT);
 		make_uint8_volume_binary(ret);
@@ -593,8 +622,8 @@ lung_segmentation(VOL_RAWVOLUMEDATA* volume)
 			NULL,
 			VOL_CONVERTUNIT_TYPE_DIRECT);
 
-		unsigned int	CCs[1] = {1};
-		extract_components(lung_shape, 1, CCs, VOL_NEIGHBOURTYPE_26);
+		unsigned int component_ids[1] = {1};
+		extract_components(lung_shape, 1, component_ids, VOL_NEIGHBOURTYPE_26);
 
 		VOL_ConvertVoxelUnit(
 			lung_shape,
@@ -645,7 +674,7 @@ lung_segmentation(VOL_RAWVOLUMEDATA* volume)
 		range.min.sint16 = VOL_MIN_OF_SINT16;
 		range.max.sint16 = lung_level + SECOND_THRESHOLD_OFFSET;
 	
-		fprintf(stderr,"... (min,max)=(%d,%d)\n",range.min.sint16,range.max.sint16);
+		fprintf(stderr, "... (min,max)=(%d,%d)\n", range.min.sint16, range.max.sint16);
 	
 		VOL_ThresholdingMinMax(tmp_volume, 0, &range);
 	
@@ -700,9 +729,9 @@ lung_segmentation(VOL_RAWVOLUMEDATA* volume)
 	//----------------------------------------------------------------------------------------------
 	fprintf(stderr,">complete each lung\n");
 	{
-		unsigned int CCs[2] = {1,2};
+		unsigned int component_ids[2] = {1,2};
 
-		extract_components(lung_shape, 2, CCs, VOL_NEIGHBOURTYPE_26);
+		extract_components(lung_shape, 2, component_ids, VOL_NEIGHBOURTYPE_26);
 
 		VOL_DilateLabeledVolume(lung_shape, 0, 5);
 
