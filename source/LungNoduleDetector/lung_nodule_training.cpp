@@ -89,7 +89,7 @@ int lung_nodule_detector_training(char* configuration_file_name, int core_num)
 
 		ZeroMemory(&sInfo, sizeof(sInfo));
 
-		if (!CreateProcess((LPTSTR)DETECTOR_FILE_NAME, (LPTSTR)command_str, NULL, NULL,
+		if(!CreateProcess((LPTSTR)DETECTOR_FILE_NAME, (LPTSTR)command_str, NULL, NULL,
 				FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &sInfo, &pInfo))
 		{
 			fprintf(stderr, "%04d\n", GetLastError());

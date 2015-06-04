@@ -174,7 +174,7 @@ VOL_RAWVOLUMEDATA* getVesselMask(
 
 		for(int i = 1; i <= 8 && i <= cmps_num; i++)
 		{
-			float	volume_percentage, ngx, ngy, ngz;
+			float volume_percentage;
 
 			VOL_GetCenterOfGravityOfComponent( cc_data, (unsigned long)i, &centor_of_gravity );
 

@@ -36,10 +36,10 @@ int main(int argc, char *argv[])
 	strcpy(configuration_file_name, argv[1]);
 
 	// Get the number of cores
-	int coreNum = atoi(argv[2]);
+	int core_num = atoi(argv[2]);
 
 	// Aneurysm detection
-	aneurysm_detector_training(configuration_file_name, coreNum);
+	aneurysm_detector_training(configuration_file_name, core_num);
 
 	return 0;
 }

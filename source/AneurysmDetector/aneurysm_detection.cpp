@@ -146,7 +146,7 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 
 	VOL_RAWVOLUMEDATA* vessel_mask = vesselSegmentation(volume, &iso_voxel_size, log_file_name);
 	
-	if( vessel_mask == NULL )
+	if(vessel_mask == NULL)
 	{
 		CircusCS_AppendLogFile(log_file_name, "Failed to extract vessel region");
 		CircusCS_DeleteBasicDcmTagValues(basic_tag_values);

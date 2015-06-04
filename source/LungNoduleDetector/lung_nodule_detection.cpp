@@ -192,8 +192,8 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 
 	for(unsigned int i = 0; i < candidates_num; i++)
 	{
-		float           sliceLocation = 0.0f;
-		VOL_VECTOR3D	gravity;
+		float        sliceLocation = 0.0f;
+		VOL_VECTOR3D gravity;
 
 		VOL_GetCenterOfGravityOfComponent(aneurysm_cc, (unsigned long)i+1, &gravity);
 
@@ -217,11 +217,11 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		
 	// Calculate feature values
 	{
-		int            length   = VOL_GetNumberOfVoxels(volume);
-		int			   offset   = volume->matrixSize->width * volume->matrixSize->height * 2;
-		short*         src_ptr  = (short*)volume->data[0] + offset;
-		float*         cv_ptr   = (float*)cv_volume->data[1] + offset;
-		unsigned int*  cand_ptr = (unsigned int*)cand_volume->data[0] + offset;
+		int           length   = VOL_GetNumberOfVoxels(volume);
+		int			  offset   = volume->matrixSize->width * volume->matrixSize->height * 2;
+		short*        src_ptr  = (short*)volume->data[0] + offset;
+		float*        cv_ptr   = (float*)cv_volume->data[1] + offset;
+		unsigned int* cand_ptr = (unsigned int*)cand_volume->data[0] + offset;
 
 		// thresholding by principal curvature and vessel mask
 		for(int i = offset; i < length - offset; i++)

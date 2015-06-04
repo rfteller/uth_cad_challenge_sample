@@ -124,8 +124,6 @@ extract_components(
 	
 	VOL_COMPONENTDATA* cc_data = VOL_NewComponentData(volume, 0, cmps_num);
 
-	//fprintf(stderr,"... CCA: %d cmps\n", cmps_num);
-
 	if(cmps_num == 0 || cc_data == NULL)	return;
 
 	VOL_SortComponentsByProperty(cc_data, VOL_CC_PROPERTY_ID_VOXELCOUNT);
@@ -150,8 +148,6 @@ extract_component_of_minimum_Z(VOL_RAWVOLUMEDATA* bin_volume, int search_offset_
 								VOL_NEIGHBOURTYPE_26);
 
 	VOL_COMPONENTDATA*	cc_data = VOL_NewComponentData(bin_volume, 0, cmp_num);
-
-	//fprintf(stderr,"... CCA: %d cmps\n",nCmps);
 
 	if(cmp_num == 0 || cc_data == NULL)	return;
 
@@ -481,8 +477,6 @@ lung_resegmentation(VOL_RAWVOLUMEDATA* signal_volume,
 					VOL_RAWVOLUMEDATA* brochi_shape)
 {
 	VOL_RAWVOLUMEDATA* ret = VOL_DuplicateRawVolumeData(signal_volume);
-
-	//fprintf(stderr,">>lung_resegmentation()\n");
 
 	// initial thresholding
 	{

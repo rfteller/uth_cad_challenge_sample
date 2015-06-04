@@ -36,16 +36,16 @@ int main(int argc, char *argv[])
 	strcpy(out_path, argv[2]);
 
 	// Get the number of cores
-	int coreNum = atoi(argv[3]);
+	int core_num = atoi(argv[3]);
 
 	// Set mode
 	int mode = (argc == 5 && atoi(argv[4]) == 2) ? 2 : 1;
 
 	// Aneurysm detection
-	int candNum = aneurysm_detection_in_mra(
+	int candidates_num = aneurysm_detection_in_mra(
 		in_path, 
 		out_path, 
-		coreNum,
+		core_num,
 		mode);
 
 	return 0;
