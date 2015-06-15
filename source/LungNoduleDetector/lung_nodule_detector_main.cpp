@@ -2,7 +2,7 @@
 //
 //    Sample codes for UTH CAD Challenge
 //
-//	      aneurysm_detector_main.cpp : Main function of lung nodule detector
+//	      lung_nodule_detector_main.cpp : Main function of lung nodule detector
 //
 //    [CAUTION] The sample codes are permitted to use only for research purposes.
 //
