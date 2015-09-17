@@ -16,6 +16,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <functional>
 
 #include "VOL.h"
 #include "VOLbinary.h"
@@ -183,7 +184,7 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 		unsigned char* vessel_ptr = (unsigned char*)vessel_mask->data[0] + offset;
 		unsigned char* cand_ptr   = (unsigned char*)cand_volume->data[0] + offset;
 
-		// thresholding by principal curvature and vessel mask
+		// thresholding by vessel mask and principal curvatures 
 		for(int i = offset; i < length - offset; i++)
 		{
 			*cand_ptr = (*vessel_ptr == 1 && *k1_ptr < 0.0f && *k1_ptr / *k2_ptr > 0.7f) ? 1 : 0;
@@ -243,7 +244,7 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 			* basic_tag_values->voxelSize_mm->width
 			* basic_tag_values->voxelSize_mm->width;
 	
-		// initialize feature values (min / max / mean of k1, k1/k2)
+		// initialize feature values (min / max / mean of voxel value and k1/k2)
 		cand_properties[i][5] = cand_properties[i][8]  =  10000.0f;
 		cand_properties[i][6] = cand_properties[i][9]  = -10000.0f;
 		cand_properties[i][7] = cand_properties[i][10] =      0.0f;
@@ -258,34 +259,33 @@ int aneurysm_detection_in_mra(const char* in_path, const char* out_path, int cor
 		float*         k2_ptr   = (float*)cv_volume->data[1] + offset;
 		unsigned int*  cand_ptr = (unsigned int*)cand_volume->data[0] + offset;
 
-		// thresholding by principal curvature and vessel mask
 		for(int i = offset; i < length - offset; i++)
 		{
 			unsigned int cand_val = *cand_ptr;
 
 			if(0 < cand_val && cand_val <= candidates_num)
 			{
-				if(*src_ptr < cand_properties[cand_val-1][5])
+				if(*src_ptr < cand_properties[cand_val-1][5])	
 				{
-					cand_properties[cand_val-1][5] = *src_ptr;
+					cand_properties[cand_val-1][5] = *src_ptr;	// min of voxel value
 				}
 				if(*src_ptr > cand_properties[cand_val-1][6])
 				{
-					cand_properties[cand_val-1][6] = *src_ptr;
+					cand_properties[cand_val-1][6] = *src_ptr;	// max of voxel value
 				}
-				cand_properties[cand_val-1][7]  += *src_ptr;
+				cand_properties[cand_val-1][7]  += *src_ptr;	// sum of voxel value
 
 				float k_ratio = *k1_ptr / *k2_ptr;
 
 				if(k_ratio < cand_properties[cand_val-1][8])
 				{
-					cand_properties[cand_val-1][8] = k_ratio;
+					cand_properties[cand_val-1][8] = k_ratio;	// min of voxel value
 				}
 				if(k_ratio > cand_properties[cand_val-1][9])
 				{
-					cand_properties[cand_val-1][9] = k_ratio;
+					cand_properties[cand_val-1][9] = k_ratio;	// max of voxel value
 				}
-				cand_properties[cand_val-1][10] += k_ratio;
+				cand_properties[cand_val-1][10] += k_ratio;		// sum of voxel value
 			}
 
 			src_ptr++;

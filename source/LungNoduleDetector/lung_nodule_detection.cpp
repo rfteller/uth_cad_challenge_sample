@@ -16,6 +16,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <functional>
 
 #include "VOL.h"
 #include "VOLbinary.h"
@@ -152,7 +153,7 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		unsigned char* lung_ptr = (unsigned char*)lung_shape->data[0] + offset;
 		unsigned char* cand_ptr = (unsigned char*)cand_volume->data[0] + offset;
 
-		// thresholding by principal curvature and vessel mask
+		// thresholding by lung mask, CT value and shape index
 		for(int i = offset; i < length - offset; i++)
 		{
 			*cand_ptr = (*lung_ptr == 1 && *src_ptr >= -700 && *si_ptr >= 0.9f) ? 1 : 0;
@@ -173,10 +174,10 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 										0,
 										VOL_NEIGHBOURTYPE_26);
 	
-	VOL_COMPONENTDATA *aneurysm_cc = VOL_NewComponentData(cand_volume, 0, candidates_num );
+	VOL_COMPONENTDATA *nodule_cc = VOL_NewComponentData(cand_volume, 0, candidates_num );
 	
 	// Sort by voxel counts (DESC)
-	VOL_SortComponentsByProperty( aneurysm_cc, VOL_CC_PROPERTY_ID_VOXELCOUNT );
+	VOL_SortComponentsByProperty( nodule_cc, VOL_CC_PROPERTY_ID_VOXELCOUNT );
 
 	candidates_num = min(candidates_num, MAX_CANDIDATES);
 	//----------------------------------------------------------------------------------------------
@@ -195,7 +196,7 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		float        sliceLocation = 0.0f;
 		VOL_VECTOR3D gravity;
 
-		VOL_GetCenterOfGravityOfComponent(aneurysm_cc, (unsigned long)i+1, &gravity);
+		VOL_GetCenterOfGravityOfComponent(nodule_cc, (unsigned long)i+1, &gravity);
 
 		cand_properties[i][0]  = 1;										 // label
 		cand_properties[i][1]  = gravity.x + (float)lung_box->origin->x; // x-gravity
@@ -204,7 +205,7 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		cand_properties[i][3] /= interpolation_ratio;
 
 		// Volume [mm3]
-		cand_properties[i][4] = (float)aneurysm_cc->nVoxelsOfComponents[i+1]
+		cand_properties[i][4] = (float)nodule_cc->nVoxelsOfComponents[i+1]
 			* basic_tag_values->voxelSize_mm->width
 			* basic_tag_values->voxelSize_mm->width
 			* basic_tag_values->voxelSize_mm->width;
@@ -223,7 +224,6 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 		float*        cv_ptr   = (float*)cv_volume->data[1] + offset;
 		unsigned int* cand_ptr = (unsigned int*)cand_volume->data[0] + offset;
 
-		// thresholding by principal curvature and vessel mask
 		for(int i = offset; i < length - offset; i++)
 		{
 			unsigned int cand_val = *cand_ptr;
@@ -232,23 +232,23 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 			{
 				if(*src_ptr < cand_properties[cand_val-1][5])
 				{
-					cand_properties[cand_val-1][5] = *src_ptr;
+					cand_properties[cand_val-1][5] = *src_ptr;	// min of CT value
 				}
 				if(*src_ptr > cand_properties[cand_val-1][6])
 				{
-					cand_properties[cand_val-1][6] = *src_ptr;
+					cand_properties[cand_val-1][6] = *src_ptr;	// max of CT value
 				}
-				cand_properties[cand_val-1][7]  += *src_ptr;
+				cand_properties[cand_val-1][7]  += *src_ptr;	// sum of CT value
 
 				if(*cv_ptr < cand_properties[cand_val-1][8])
 				{
-					cand_properties[cand_val-1][8] = *cv_ptr;
+					cand_properties[cand_val-1][8] = *cv_ptr;	// min of curvedness
 				}
 				if(*cv_ptr > cand_properties[cand_val-1][9])
 				{
-					cand_properties[cand_val-1][9] = *cv_ptr;
+					cand_properties[cand_val-1][9] = *cv_ptr;	// max of curvedness
 				}
-				cand_properties[cand_val-1][10] += *cv_ptr;
+				cand_properties[cand_val-1][10] += *cv_ptr;		// sum of curvedness
 			}
 
 			src_ptr++;
@@ -259,8 +259,8 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 
 	for(unsigned int i = 0; i < candidates_num; i++)
 	{
-		cand_properties[i][7]  /= (float)aneurysm_cc->nVoxelsOfComponents[i+1];
-		cand_properties[i][10] /= (float)aneurysm_cc->nVoxelsOfComponents[i+1];
+		cand_properties[i][7]  /= (float)nodule_cc->nVoxelsOfComponents[i+1];
+		cand_properties[i][10] /= (float)nodule_cc->nVoxelsOfComponents[i+1];
 
 		for(int j=0; j<NUM_FEATURES; j++)
 		{
@@ -272,7 +272,7 @@ int lung_nodule_detection(const char* in_path, const char* out_path, int core_nu
 	VOL_DeleteRawVolumeData(volume);
 	VOL_DeleteRawVolumeData(cand_volume);
 	VOL_DeleteRawVolumeData(lung_shape);
-	VOL_DeleteComponentData(aneurysm_cc);
+	VOL_DeleteComponentData(nodule_cc);
 	//----------------------------------------------------------------------------------------------
 
 	//----------------------------------------------------------------------------------------------
