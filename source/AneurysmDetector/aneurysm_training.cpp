@@ -57,7 +57,10 @@ int aneurysm_detector_training(char* configuration_file_name, int core_num)
 	// third line or later: folder for input case
 	while(fgets(in_path, sizeof(in_path), fp) != NULL)
 	{
-		in_path[strlen(in_path)-1] = '\0';
+		if (in_path[strlen(in_path)-1] == '\n')
+		{
+			in_path[strlen(in_path)-1] = '\0';
+		}
 		in_path_list.push_back(in_path);
 	}
 	
