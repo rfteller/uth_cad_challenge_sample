@@ -756,9 +756,14 @@ lung_segmentation(VOL_RAWVOLUMEDATA* volume)
 	}
 	//----------------------------------------------------------------------------------------------
 
+	// remove bone region
+	fprintf(stderr,">remove bone region\n");
+	VOL_BooleanOperationOfBinaryVolume(lung_shape, 0, bone_shape, 0, "NAND");
+
 	// useless hereafter
 	VOL_DeleteRawVolumeData(bronchi_shape);
 	VOL_DeleteRawVolumeData(body_trunk);
+	VOL_DeleteRawVolumeData(bone_shape);
 
 	// output binary shape only
 	VOL_SwapContentsOfRawVolumeData(volume, lung_shape);
